@@ -1,17 +1,20 @@
 const express = require("express");
 const app = express();
-app.use('/hello',(req, res)=>{
-    res.send("<h1>Hello </h1>");
+const user = require("../routers/user");
+const mongoose = require("mongoose");
+require('dotenv').config()
+
+mongoose.connect(process.env.MONGODB_URI, {
+  useNewUrlParser: true,
+  useUnifiedTopology: true,
 })
-app.get('/hellotest',(req, res)=>{
-    res.send("<h1>Hello test</h1>");
-})
-app.get('/abc',(req, res)=>{
-    res.send("<h1>ABC </h1>");
-})
-app.get('/123',(req, res)=>{
-    res.send("<h1>123</h1>");
-})
+.then(() => console.log("MongoDB connected successfully"))
+.catch((err) => console.error("MongoDB connection error:", err));
+
+app.use(express.json());
+
+app.use("/api/user", user);
+
 
 app.listen(5000, ()=>{
     console.log("Server started");

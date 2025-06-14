@@ -26,7 +26,16 @@ const userSchema = new mongoose.Schema(
     },
     password: { type: String, required: true },
     age: { type: Number },
-    skills: { type: [String], required: true },
+    skills: {
+      type: [String],
+      required: true,
+      validate: {
+        validator: function (value) {
+          return value.length <= 20;
+        },
+        message: "Too many skills, enter only 20 maximum",
+      },
+    },
     photoURL: {
       type: String,
       default:

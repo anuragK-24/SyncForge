@@ -2,7 +2,11 @@ const express = require("express");
 const router = express.Router();
 const User = require("../models/user");
 const bcrypt = require("bcrypt");
+const jwt = require("jsonwebtoken");
 const { validateSignUpData } = require("../utils/validation");
+require("dotenv").config();
+const SECRET_KEY = process.env.SECRET_KEY;
+const { userAuth } = require("../middleware/auth");
 
 router.post("/signup", async (req, res) => {
   try {
@@ -40,6 +44,15 @@ router.post("/signup", async (req, res) => {
   }
 });
 
+router.get("/profile", userAuth, async (req, res) => {
+  try {
+    const user = req.user;
+    res.send(user);
+  } catch (error) {
+    console.log("ERROR :", error);
+  }
+});
+
 router.post("/login", async (req, res) => {
   try {
     const { emailId, password } = req.body;
@@ -51,9 +64,13 @@ router.post("/login", async (req, res) => {
     }
 
     const isPasswordValid = await bcrypt.compare(password, user.password);
-    console.log(isPasswordValid);
 
     if (isPasswordValid) {
+      const token = await jwt.sign({ _id: user._id }, SECRET_KEY, {
+        expiresIn: "1d",
+      });
+      res.cookie("token", token);
+
       res.status(200).send("User logged In successfullly");
     } else {
       throw new Error("Invalid credentials !");
@@ -63,7 +80,7 @@ router.post("/login", async (req, res) => {
   }
 });
 
-router.get("/users", async (req, res) => {
+router.get("/users", userAuth, async (req, res) => {
   try {
     const users = await User.find();
     res.status(200).send(users);
@@ -72,7 +89,7 @@ router.get("/users", async (req, res) => {
   }
 });
 
-router.delete("/delete/", async (req, res) => {
+router.delete("/delete/", userAuth, async (req, res) => {
   const { _id } = req.body;
 
   try {
@@ -89,7 +106,7 @@ router.delete("/delete/", async (req, res) => {
   }
 });
 
-router.patch("/user/:userId", async (req, res) => {
+router.patch("/user/:userId", userAuth, async (req, res) => {
   const userId = req.params.userId;
   const data = req.body;
 

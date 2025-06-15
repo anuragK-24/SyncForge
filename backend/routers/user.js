@@ -18,7 +18,6 @@ router.post("/signup", async (req, res) => {
       photoURL,
       about,
     } = req.body;
-    
 
     const passwordHash = await bcrypt.hash(password, 10);
 
@@ -27,7 +26,7 @@ router.post("/signup", async (req, res) => {
       lastName,
       emailId,
       gender,
-      password : passwordHash,
+      password: passwordHash,
       age,
       skills,
       photoURL,
@@ -41,7 +40,30 @@ router.post("/signup", async (req, res) => {
   }
 });
 
-router.get("/", async (req, res) => {
+router.post("/login", async (req, res) => {
+  try {
+    const { emailId, password } = req.body;
+
+    const user = await User.findOne({ emailId: emailId });
+
+    if (!user) {
+      throw new Error("Invalid credentials !");
+    }
+
+    const isPasswordValid = await bcrypt.compare(password, user.password);
+    console.log(isPasswordValid);
+
+    if (isPasswordValid) {
+      res.status(200).send("User logged In successfullly");
+    } else {
+      throw new Error("Invalid credentials !");
+    }
+  } catch (error) {
+    res.status(400).send("ERROR : " + error.message);
+  }
+});
+
+router.get("/users", async (req, res) => {
   try {
     const users = await User.find();
     res.status(200).send(users);
@@ -50,7 +72,7 @@ router.get("/", async (req, res) => {
   }
 });
 
-router.delete("/", async (req, res) => {
+router.delete("/delete/", async (req, res) => {
   const { _id } = req.body;
 
   try {

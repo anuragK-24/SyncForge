@@ -6,8 +6,13 @@ const userSchema = new mongoose.Schema(
     firstName: {
       type: String,
       required: true,
+      minLength: 4,
+      maxLength: 15,
     },
-    lastName: { type: String },
+    lastName: {
+      type: String,
+      maxLength: 15,
+    },
     emailId: {
       type: String,
       lowercase: true,
@@ -16,20 +21,11 @@ const userSchema = new mongoose.Schema(
       unique: true,
       validate(value) {
         if (!validator.isEmail(value)) {
-          throw new Error("Email is invalid " + value);
+          throw new Error("Email is invalid: " + value);
         }
       },
     },
-    gender: {
-      type: String,
-      required: true,
-      validate: {
-        validator: function (value) {
-          return ["female", "male", "others"].includes(value);
-        },
-        message: "Entered gender is not valid!",
-      },
-    },
+
     password: {
       type: String,
       required: true,
@@ -50,13 +46,22 @@ const userSchema = new mongoose.Schema(
         message: "Too many skills, enter only 20 maximum",
       },
     },
+    gender: {
+      type: String,
+      required: true,
+      lowercase: true,
+      enum: {
+        values: ["female", "male", "others"],
+        message: "Gender must be 'female', 'male', or 'others'",
+      },
+    },
     photoURL: {
       type: String,
       default:
         "https://static.vecteezy.com/system/resources/previews/019/879/186/large_2x/user-icon-on-transparent-background-free-png.png",
       validate(value) {
         if (!validator.isURL(value)) {
-          throw new Error("The photo URL is invalid " + value);
+          throw new Error("The photo URL is invalid: " + value);
         }
       },
     },
@@ -69,7 +74,5 @@ const userSchema = new mongoose.Schema(
     timestamps: true,
   }
 );
+module.exports = mongoose.model("User", userSchema);
 
-module.exports = {
-  User: mongoose.model("User", userSchema),
-};

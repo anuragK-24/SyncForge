@@ -1,6 +1,45 @@
 const express = require("express");
 const router = express.Router();
-const { User } = require("../models/user");
+const User = require("../models/user");
+const bcrypt = require("bcrypt");
+const { validateSignUpData } = require("../utils/validation");
+
+router.post("/signup", async (req, res) => {
+  try {
+    validateSignUpData(req.body);
+    const {
+      firstName,
+      lastName,
+      emailId,
+      gender,
+      password,
+      age,
+      skills,
+      photoURL,
+      about,
+    } = req.body;
+    
+
+    const passwordHash = await bcrypt.hash(password, 10);
+
+    const user = new User({
+      firstName,
+      lastName,
+      emailId,
+      gender,
+      password : passwordHash,
+      age,
+      skills,
+      photoURL,
+      about,
+    });
+
+    await user.save();
+    res.status(200).send("User has been added successfully");
+  } catch (error) {
+    res.status(400).send("ERROR : " + error.message);
+  }
+});
 
 router.get("/", async (req, res) => {
   try {
@@ -11,15 +50,6 @@ router.get("/", async (req, res) => {
   }
 });
 
-router.post("/", async (req, res) => {
-  const user = new User(req.body);
-  try {
-    await user.save();
-    res.status(200).send("User has been added successfully");
-  } catch (error) {
-    res.status(400);
-  }
-});
 router.delete("/", async (req, res) => {
   const { _id } = req.body;
 

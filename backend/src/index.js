@@ -1,21 +1,16 @@
 const express = require("express");
 const app = express();
-const user = require("../routers/user");
-const mongoose = require("mongoose");
 const cookieParser = require("cookie-parser");
 require("dotenv").config();
+const user = require("../routers/user");
 
-
-mongoose
-  .connect(process.env.MONGODB_URI, {
-    useNewUrlParser: true,
-    useUnifiedTopology: true,
-  })
-  .then(() => console.log("MongoDB connected successfully"))
-  .catch((err) => console.error("MongoDB connection error:", err));
-
+// middlewares for sending reciving data in json format, and for parsing cookies.
 app.use(express.json());
 app.use(cookieParser());
+
+// connection of database
+require("../config/database");
+
 
 app.use("/api/user", user);
 

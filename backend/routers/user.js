@@ -63,12 +63,10 @@ router.post("/login", async (req, res) => {
       throw new Error("Invalid credentials !");
     }
 
-    const isPasswordValid = await bcrypt.compare(password, user.password);
+    const isPasswordValid = await user.validatePassword(password);
 
     if (isPasswordValid) {
-      const token = await jwt.sign({ _id: user._id }, SECRET_KEY, {
-        expiresIn: "1d",
-      });
+      const token = await user.getJWT();
       res.cookie("token", token);
 
       res.status(200).send("User logged In successfullly");

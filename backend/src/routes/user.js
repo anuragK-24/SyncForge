@@ -1,48 +1,9 @@
 const express = require("express");
-const router = express.Router();
+const userRouter = express.Router();
 const User = require("../models/user");
-const bcrypt = require("bcrypt");
-const jwt = require("jsonwebtoken");
-const { validateSignUpData } = require("../utils/validation");
 const { userAuth } = require("../middleware/auth");
 
-router.post("/signup", async (req, res) => {
-  try {
-    validateSignUpData(req.body);
-    const {
-      firstName,
-      lastName,
-      emailId,
-      gender,
-      password,
-      age,
-      skills,
-      photoURL,
-      about,
-    } = req.body;
-
-    const passwordHash = await bcrypt.hash(password, 10);
-
-    const user = new User({
-      firstName,
-      lastName,
-      emailId,
-      gender,
-      password: passwordHash,
-      age,
-      skills,
-      photoURL,
-      about,
-    });
-
-    await user.save();
-    res.status(200).send("User has been added successfully");
-  } catch (error) {
-    res.status(400).send("ERROR : " + error.message);
-  }
-});
-
-router.get("/profile", userAuth, async (req, res) => {
+userRouter.get("/profile", userAuth, async (req, res) => {
   try {
     const user = req.user;
     res.send(user);
@@ -51,32 +12,7 @@ router.get("/profile", userAuth, async (req, res) => {
   }
 });
 
-router.post("/login", async (req, res) => {
-  try {
-    const { emailId, password } = req.body;
-
-    const user = await User.findOne({ emailId: emailId });
-
-    if (!user) {
-      throw new Error("Invalid credentials !");
-    }
-
-    const isPasswordValid = await user.validatePassword(password);
-
-    if (isPasswordValid) {
-      const token = await user.getJWT();
-      res.cookie("token", token);
-
-      res.status(200).send("User logged In successfullly");
-    } else {
-      throw new Error("Invalid credentials !");
-    }
-  } catch (error) {
-    res.status(400).send("ERROR : " + error.message);
-  }
-});
-
-router.get("/users", userAuth, async (req, res) => {
+userRouter.get("/users", userAuth, async (req, res) => {
   try {
     const users = await User.find();
     res.status(200).send(users);
@@ -85,7 +21,7 @@ router.get("/users", userAuth, async (req, res) => {
   }
 });
 
-router.delete("/delete/", userAuth, async (req, res) => {
+userRouter.delete("/delete", userAuth, async (req, res) => {
   const { _id } = req.body;
 
   try {
@@ -102,7 +38,7 @@ router.delete("/delete/", userAuth, async (req, res) => {
   }
 });
 
-router.patch("/user/:userId", userAuth, async (req, res) => {
+userRouter.patch("/user/:userId", userAuth, async (req, res) => {
   const userId = req.params.userId;
   const data = req.body;
 
@@ -136,4 +72,4 @@ router.patch("/user/:userId", userAuth, async (req, res) => {
   }
 });
 
-module.exports = router;
+module.exports = userRouter;

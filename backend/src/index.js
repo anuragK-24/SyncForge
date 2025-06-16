@@ -2,7 +2,7 @@ const express = require("express");
 const app = express();
 const cookieParser = require("cookie-parser");
 require("dotenv").config();
-const user = require("./routers/user");
+const user = require("./routes/user");
 
 // middlewares for sending reciving data in json format, and for parsing cookies.
 app.use(express.json());

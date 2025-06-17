@@ -77,6 +77,10 @@ const userSchema = new mongoose.Schema(
   }
 );
 
+
+//Compound index 
+userSchema.index({ firstName: 1, lastName: 1 });
+
 // don't use arrow function here, as this keyword don't work inside it.
 userSchema.methods.getJWT = async function () {
   const user = this;

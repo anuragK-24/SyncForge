@@ -5,6 +5,7 @@ require("dotenv").config();
 const user = require("./routes/user");
 const authRouter = require("./routes/auth");
 const profileRouter = require("./routes/profile");
+const requestRouter = require("./routes/request");
 
 // middlewares for sending reciving data in json format, and for parsing cookies.
 app.use(express.json());
@@ -15,6 +16,7 @@ require("./config/database");
 
 app.use("/auth", authRouter);
 app.use("/profile", profileRouter);
+app.use("/request", requestRouter);
 
 
 app.use("/api/user", user);

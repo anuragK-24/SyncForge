@@ -2,6 +2,79 @@ const express = require("express");
 const userRouter = express.Router();
 const User = require("../models/user");
 const { userAuth } = require("../middleware/auth");
+const ConnectionRequest = require("../models/connectionRequest");
+
+userRouter.get("/connections", userAuth, async (req, res) => {
+  try {
+    const loggedInUser = req.user;
+    const userId = loggedInUser._id;
+    const connections = await ConnectionRequest.find({
+      $or: [
+        {
+          toUserId: userId,
+          status: "accepted",
+        },
+        {
+          fromUserId: userId,
+          status: "accepted",
+        },
+      ],
+    }).populate("fromUserId", ["firstName", "lastName"]);
+
+    const data = connections.map((connection) => connection.fromUserId);
+
+    res.status(200).send({ message: "Found connections ", data });
+  } catch (error) {
+    res.status(400).send("Error : ", error.message);
+  }
+});
+
+userRouter.get("/pendingRequest", userAuth, async (req, res) => {
+  try {
+    const loggedInUser = req.user;
+    const userId = loggedInUser._id;
+    const requests = await ConnectionRequest.find({
+      toUserId: userId,
+      status: "interested",
+    }).populate("fromUserId", [
+      "firstName",
+      "lastName",
+      "photoURL",
+      "gender",
+      "about",
+      "skills",
+    ]);
+    console.log(requests);
+
+    const data = requests.map((request) => request.fromUserId);
+
+    res.status(200).send({ message: "Found requests ", data });
+  } catch (error) {
+    res.status(400).send("Error : ", error.message);
+  }
+});
+userRouter.get("/feed", userAuth, async (req, res) => {
+  try {
+    const loggedInUserId = req.user._id;
+
+    const connections = await ConnectionRequest.find(
+      {
+        toUserId: loggedInUserId,
+        status: { $in: ["accepted", "ignored"] },
+      },
+      { fromUserId: 1, _id: 0 }
+    );
+
+    const connectedUserIds = connections.map((conn) => conn.fromUserId);
+    connectedUserIds.push(loggedInUserId);
+
+    const users = await User.find({ _id: { $nin: connectedUserIds } });
+
+    res.status(200).send({ feed: users });
+  } catch (error) {
+    res.status(400).send({ error: error.message });
+  }
+});
 
 userRouter.get("/profile", userAuth, async (req, res) => {
   try {

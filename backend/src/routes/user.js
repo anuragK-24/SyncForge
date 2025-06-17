@@ -71,24 +71,44 @@ userRouter.get("/pendingRequest", userAuth, async (req, res) => {
 });
 userRouter.get("/feed", userAuth, async (req, res) => {
   try {
-    const loggedInUserId = req.user._id;
+    const page = req.query.page || 1;
+    let limit = req.query.limit || 10;
+    limit = limit > 20 ? 20 : limit;
+    const skip = (page - 1) * limit;
+
+    const loggedInUserId = req.user._id.toString();
 
     const connections = await ConnectionRequest.find(
       {
-        toUserId: loggedInUserId,
-        status: { $in: ["accepted", "ignored"] },
+        $or: [
+          {
+            toUserId: loggedInUserId,
+            status: { $in: ["accepted", "ignored"] },
+          },
+          {
+            fromUserId: loggedInUserId,
+            status: { $in: ["accepted", "interested"] },
+          },
+        ],
       },
-      { fromUserId: 1, _id: 0 }
+      { fromUserId: 1, toUserId: 1, _id: 0 }
     );
 
-    const connectedUserIds = connections.map((conn) => conn.fromUserId);
+    const connectedUserIds = connections.map((conn) => {
+      const fromId = conn.fromUserId.toString();
+      const toId = conn.toUserId.toString();
+      return fromId === loggedInUserId ? toId : fromId;
+    });
+
     connectedUserIds.push(loggedInUserId);
 
-    const users = await User.find({ _id: { $nin: connectedUserIds } });
+    const users = await User.find({ _id: { $nin: connectedUserIds } })
+      .skip(skip)
+      .limit(limit);
 
-    res.status(200).send({ feed: users });
+    res.status(200).json({ feed: users });
   } catch (error) {
-    res.status(400).send({ error: error.message });
+    res.status(400).json({ error: error.message });
   }
 });
 

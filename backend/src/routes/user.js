@@ -4,6 +4,15 @@ const User = require("../models/user");
 const { userAuth } = require("../middleware/auth");
 const ConnectionRequest = require("../models/connectionRequest");
 
+const SAFE_USER_DATA = [
+  "firstName",
+  "lastName",
+  "photoURL",
+  "gender",
+  "about",
+  "skills",
+];
+
 userRouter.get("/connections", userAuth, async (req, res) => {
   try {
     const loggedInUser = req.user;
@@ -19,9 +28,16 @@ userRouter.get("/connections", userAuth, async (req, res) => {
           status: "accepted",
         },
       ],
-    }).populate("fromUserId", ["firstName", "lastName"]);
+    })
+      .populate("fromUserId", SAFE_USER_DATA)
+      .populate("toUserId", SAFE_USER_DATA);
 
-    const data = connections.map((connection) => connection.fromUserId);
+    const data = connections.map((connection) => {
+      if (connection.fromUserId._id.toString() === userId.toString()) {
+        return connection.toUserId;
+      }
+      return connection.fromUserId;
+    });
 
     res.status(200).send({ message: "Found connections ", data });
   } catch (error) {

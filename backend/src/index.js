@@ -6,6 +6,17 @@ const authRouter = require("./routes/auth");
 const profileRouter = require("./routes/profile");
 const requestRouter = require("./routes/request");
 const userRouter = require("./routes/user");
+const cors = require("cors");
+
+
+app.use(
+  cors({
+    origin: process.env.CLIENT_URL, // Replace with your frontend's URL
+    credentials: true,
+    methods: ["GET", "POST", "PUT", "DELETE", "OPTIONS"],
+    allowedHeaders: ["Content-Type", "Authorization"],
+  })
+);
 
 // middlewares for sending reciving data in json format, and for parsing cookies.
 app.use(express.json());

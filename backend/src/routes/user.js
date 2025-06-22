@@ -45,6 +45,7 @@ userRouter.get("/connections", userAuth, async (req, res) => {
   }
 });
 
+// done added
 userRouter.get("/pendingRequest", userAuth, async (req, res) => {
   try {
     const loggedInUser = req.user;
@@ -112,6 +113,7 @@ userRouter.get("/feed", userAuth, async (req, res) => {
   }
 });
 
+//done added
 userRouter.get("/profile", userAuth, async (req, res) => {
   try {
     const user = req.user;
@@ -147,7 +149,8 @@ userRouter.delete("/delete", userAuth, async (req, res) => {
   }
 });
 
-userRouter.patch("/user/:userId", userAuth, async (req, res) => {
+//done added
+userRouter.patch("/profileUpdate/:userId", userAuth, async (req, res) => {
   const userId = req.params.userId;
   const data = req.body;
 

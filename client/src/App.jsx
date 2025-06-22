@@ -1,11 +1,16 @@
-import { BrowserRouter as Router, Routes, Route, Navigate } from "react-router-dom";
+import {
+  BrowserRouter as Router,
+  Routes,
+  Route,
+  Navigate,
+} from "react-router-dom";
 import ConnectionRequests from "./pages/ConnectionRequests";
 import Feed from "./pages/Feed";
 import Login from "./pages/Login";
 import Profile from "./pages/Profile";
 import Register from "./pages/Register";
-// import Feed from "./pages/Feed"; 
 import Navbar from "./components/Navbar.jsx";
+import SwipedProfiles from "./pages/SwipedProfiles.jsx";
 
 // 🔒 Auth check
 const isAuthenticated = () => document.cookie.includes("token");
@@ -26,12 +31,28 @@ function App() {
 
         {/* Protected Routes */}
         <Route path="/feed" element={<PrivateRoute element={<Feed />} />} />
-        {/* <Route path="/swipe" element={<PrivateRoute element={<SwipeFeed />} />} /> */}
-        <Route path="/profile" element={<PrivateRoute element={<Profile />} />} />
-        <Route path="/requests" element={<PrivateRoute element={<ConnectionRequests />} />} />
+        <Route
+          path="/swipes"
+          element={<PrivateRoute element={<SwipedProfiles />} />}
+        />
+        <Route
+          path="/profile"
+          element={<PrivateRoute element={<Profile />} />}
+        />
+        <Route
+          path="/requests"
+          element={<PrivateRoute element={<ConnectionRequests />} />}
+        />
 
         {/* Fallback */}
-        <Route path="*" element={<h1 className="text-center text-2xl mt-20 text-red-500">404 - Page Not Found</h1>} />
+        <Route
+          path="*"
+          element={
+            <h1 className="text-center text-2xl mt-20 text-red-500">
+              404 - Page Not Found
+            </h1>
+          }
+        />
       </Routes>
     </Router>
   );

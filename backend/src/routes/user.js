@@ -13,6 +13,31 @@ const SAFE_USER_DATA = [
   "skills",
 ];
 
+userRouter.get("/swipes", userAuth, async (req, res) => {
+  try {
+    const userId = req.user._id;
+    const requests = await ConnectionRequest.find({
+      fromUserId: userId,
+      status: "interested",
+    }).populate("toUserId", [
+      "firstName",
+      "lastName",
+      "photoURL",
+      "gender",
+      "about",
+      "skills",
+    ]);
+
+    const swipedProfiles = requests.map((req) => req.toUserId);
+
+    res
+      .status(200)
+      .json({ message: "Profiles you swiped", data: swipedProfiles });
+  } catch (error) {
+    res.status(400).json({ error: error.message });
+  }
+});
+
 userRouter.get("/connections", userAuth, async (req, res) => {
   try {
     const loggedInUser = req.user;
@@ -70,39 +95,37 @@ userRouter.get("/pendingRequest", userAuth, async (req, res) => {
     res.status(400).send("Error : ", error.message);
   }
 });
+
 userRouter.get("/feed", userAuth, async (req, res) => {
   try {
-    const page = req.query.page || 1;
-    let limit = req.query.limit || 10;
+    const page = parseInt(req.query.page) || 1;
+    let limit = parseInt(req.query.limit) || 10;
     limit = limit > 20 ? 20 : limit;
     const skip = (page - 1) * limit;
 
     const loggedInUserId = req.user._id.toString();
 
+    // 1. Get all connection relations
     const connections = await ConnectionRequest.find(
       {
         $or: [
-          {
-            toUserId: loggedInUserId,
-            status: { $in: ["accepted", "ignored"] },
-          },
-          {
-            fromUserId: loggedInUserId,
-            status: { $in: ["accepted", "interested"] },
-          },
+          { toUserId: loggedInUserId, status: { $in: ["accepted", "ignored", "interested"] } },
+          { fromUserId: loggedInUserId, status: { $in: ["accepted", "interested"] } },
         ],
       },
       { fromUserId: 1, toUserId: 1, _id: 0 }
     );
 
+    // 2. Extract IDs to exclude
     const connectedUserIds = connections.map((conn) => {
       const fromId = conn.fromUserId.toString();
       const toId = conn.toUserId.toString();
       return fromId === loggedInUserId ? toId : fromId;
     });
 
-    connectedUserIds.push(loggedInUserId);
+    connectedUserIds.push(loggedInUserId); // exclude self
 
+    // 3. Final feed: users not in connectedUserIds
     const users = await User.find({ _id: { $nin: connectedUserIds } })
       .skip(skip)
       .limit(limit);
@@ -112,6 +135,7 @@ userRouter.get("/feed", userAuth, async (req, res) => {
     res.status(400).json({ error: error.message });
   }
 });
+
 
 //done added
 userRouter.get("/profile", userAuth, async (req, res) => {

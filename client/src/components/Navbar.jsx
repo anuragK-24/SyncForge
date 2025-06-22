@@ -24,10 +24,21 @@ export default function Navbar() {
       <div className="space-x-6 text-sm font-medium">
         {isLoggedIn ? (
           <>
-            <Link to="/feed" className="hover:text-indigo-600 text-gray-800">Feed</Link>
-            {/* <Link to="/swipe" className="hover:text-indigo-600 text-gray-800">Swipe</Link> */}
-            <Link to="/profile" className="hover:text-indigo-600 text-gray-800">Profile</Link>
-            <Link to="/requests" className="hover:text-indigo-600 text-gray-800">Requests</Link>
+            <Link to="/feed" className="hover:text-indigo-600 text-gray-800">
+              Feed
+            </Link>
+            <Link to="/swipes" className="hover:text-indigo-600 text-gray-800">
+              Swipes
+            </Link>
+            <Link
+              to="/requests"
+              className="hover:text-indigo-600 text-gray-800"
+            >
+              Requests
+            </Link>
+            <Link to="/profile" className="hover:text-indigo-600 text-gray-800">
+              Profile
+            </Link>
             <button
               onClick={handleLogout}
               className="text-red-500 hover:text-red-700"
@@ -37,8 +48,15 @@ export default function Navbar() {
           </>
         ) : (
           <>
-            <Link to="/login" className="hover:text-indigo-600 text-gray-800">Login</Link>
-            <Link to="/register" className="hover:text-indigo-600 text-gray-800">Register</Link>
+            <Link to="/login" className="hover:text-indigo-600 text-gray-800">
+              Login
+            </Link>
+            <Link
+              to="/register"
+              className="hover:text-indigo-600 text-gray-800"
+            >
+              Register
+            </Link>
           </>
         )}
       </div>

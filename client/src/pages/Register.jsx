@@ -3,6 +3,7 @@ import axios from "axios";
 import InputField from "../components/InputField";
 import SelectField from "../components/SelectField";
 import TextAreaField from "../components/TextAreaField";
+import { useNavigate } from "react-router-dom";
 
 export default function Register() {
   const API = import.meta.env.VITE_API_URL;
@@ -18,7 +19,7 @@ export default function Register() {
     photoURL: "",
     about: "",
   });
-
+  const navigate = useNavigate();
   const [loading, setLoading] = useState(false);
   const [message, setMessage] = useState("");
 
@@ -43,6 +44,7 @@ export default function Register() {
 
       const response = await axios.post(`${API}/auth/signup`, payload);
       setMessage("🎉 Profile created successfully! Start collaborating now.");
+      navigate("/feed");
       console.log("Response:", response.data);
     } catch (error) {
       console.error("Error submitting form:", error);

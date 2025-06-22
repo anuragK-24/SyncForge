@@ -41,7 +41,6 @@ export default function Feed() {
 
   const sendRequest = async (status, toUserId, toUserName) => {
     try {
-      console.log("Username :", toUserName);
       await axios.post(
         `${API}/request/send/${status}/${toUserId}`,
         {},
@@ -75,8 +74,8 @@ export default function Feed() {
     }
   }, [message]);
   return (
-    <div className="min-h-screen bg-gradient-to-tr from-indigo-50 to-pink-100 flex items-center justify-center p-6">
-      <div className="relative w-[300px] max-w-lg h-[650px]">
+    <div className="h-[93vh] w-screen bg-black sm:bg-gradient-to-tr sm:from-indigo-50 sm:to-pink-100 relative overflow-hidden">
+      <div className="absolute inset-0 flex items-center justify-center">
         {message && (
           <motion.div
             className={`z-50 absolute top-6 left-1/2 -translate-x-1/2 flex items-center gap-3 px-5 py-3 rounded-lg shadow-xl text-sm font-semibold text-white
@@ -103,7 +102,7 @@ export default function Feed() {
           {profiles.length > 0 && currentIndex < profiles.length ? (
             <motion.div
               key={profiles[currentIndex]._id}
-              className="relative w-full max-w-md mx-auto h-[75%] rounded-3xl overflow-hidden shadow-xl"
+              className="relative w-full h-full sm:w-[350px] sm:h-[90%] sm:rounded-3xl overflow-hidden shadow-xl"
               drag="x"
               dragConstraints={{ left: 0, right: 0 }}
               dragElastic={1}

@@ -1,9 +1,4 @@
-import {
-  BrowserRouter as Router,
-  Routes,
-  Route,
-  Navigate,
-} from "react-router-dom";
+import { Routes, Route, Navigate, BrowserRouter } from "react-router-dom";
 import ConnectionRequests from "./pages/ConnectionRequests";
 import Feed from "./pages/Feed";
 import Login from "./pages/Login";
@@ -22,7 +17,7 @@ const PrivateRoute = ({ element }) => {
 
 function App() {
   return (
-    <Router>
+    <BrowserRouter>
       <Navbar />
       <Routes>
         <Route path="/" element={<Navigate to="/feed" />} />
@@ -54,7 +49,7 @@ function App() {
           }
         />
       </Routes>
-    </Router>
+    </BrowserRouter>
   );
 }
 

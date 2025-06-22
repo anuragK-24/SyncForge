@@ -25,10 +25,10 @@ export default function Login() {
     setMessage("");
 
     try {
-      console.log("✅ Logged in successfully!")
       const response = await axios.post(`${API}/auth/login`, formData, {
         withCredentials: true,
       });
+      console.log("✅ Logged in successfully!");
       setMessage("✅ Logged in successfully!");
       navigate("/feed");
     } catch (error) {

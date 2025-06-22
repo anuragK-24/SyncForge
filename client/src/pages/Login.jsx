@@ -28,9 +28,9 @@ export default function Login() {
       const response = await axios.post(`${API}/auth/login`, formData, {
         withCredentials: true,
       });
-      console.log("✅ Logged in successfully!");
       setMessage("✅ Logged in successfully!");
-      navigate("/feed");
+      // navigate("/feed");
+      window.location.href = "/feed";
     } catch (error) {
       console.error("Login error:", error);
       setMessage("❌ Login failed. Check credentials and try again.");

@@ -13,7 +13,7 @@ const userRouter = require("./routes/user");
 app.use(
   cors({
     origin: process.env.CLIENT_URL,
-    credentials: false,
+    credentials: true,
     methods: ["GET", "POST", "PUT", "PATCH", "DELETE", "OPTIONS"],
     allowedHeaders: ["Content-Type", "Authorization"],
   })

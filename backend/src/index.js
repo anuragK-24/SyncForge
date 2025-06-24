@@ -12,7 +12,7 @@ const userRouter = require("./routes/user");
 // CORS
 app.use(
   cors({
-    origin: [process.env.CLIENT_URL, "https://web.postman.co"],
+    origin: "https://sync-forge.vercel.app",
     credentials: true,
     methods: ["GET", "POST", "PUT", "PATCH", "DELETE", "OPTIONS"],
     allowedHeaders: ["Content-Type", "Authorization"],

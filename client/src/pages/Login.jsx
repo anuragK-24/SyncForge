@@ -15,6 +15,7 @@ export default function Login() {
   const [message, setMessage] = useState("");
 
   const navigate = useNavigate();
+
   const handleChange = (e) => {
     setFormData((prev) => ({ ...prev, [e.target.name]: e.target.value }));
   };
@@ -26,11 +27,19 @@ export default function Login() {
 
     try {
       const response = await axios.post(`${API}/auth/login`, formData, {
+        withCredentials: true, // Use this only if backend sends token via cookies
       });
 
-      setMessage("✅ Logged in successfully!");
-      navigate("/feed");
-      
+      // If token is returned in response body
+      const token = response?.data?.token;
+
+      if (token) {
+        localStorage.setItem("authToken", token);
+        setMessage("✅ Logged in successfully!");
+        navigate("/feed");
+      } else {
+        setMessage("❌ Login failed. No token received.");
+      }
     } catch (error) {
       console.error("Login error:", error);
       setMessage("❌ Login failed. Check credentials and try again.");
@@ -88,8 +97,9 @@ export default function Login() {
         >
           {loading ? "Logging in..." : "Login & Collaborate 💼"}
         </button>
-        <p className="text-center mt-4 text-sm ">
-          Don't have account ?{" "}
+
+        <p className="text-center mt-4 text-sm">
+          Don't have account?{" "}
           <Link to="/register" className="hover:text-indigo-600 text-blue-800">
             Register
           </Link>

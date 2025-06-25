@@ -16,7 +16,7 @@ export default function ProfileCard({ profile, onSwipe, swipeDirection }) {
 
   return (
     <motion.div
-      className="relative w-full h-full sm:w-[350px] sm:h-[90%] sm:rounded-3xl overflow-hidden shadow-xl"
+      className="relative w-full h-[90vh] sm:w-[350px] sm:h-[90%] sm:rounded-3xl overflow-hidden shadow-xl"
       drag="x"
       dragConstraints={{ left: 0, right: 0 }}
       dragElastic={1}
@@ -46,7 +46,7 @@ export default function ProfileCard({ profile, onSwipe, swipeDirection }) {
     >
       <div className="absolute inset-0 bg-gradient-to-t from-black via-black/40 to-transparent"></div>
 
-      <div className="absolute bottom-0 w-full p-5 text-white z-10">
+      <div className="absolute bottom-0 w-full p-2 text-white z-10">
         <h2 className="text-3xl font-bold">
           {profile.firstName} {profile.lastName}
         </h2>
@@ -56,7 +56,7 @@ export default function ProfileCard({ profile, onSwipe, swipeDirection }) {
         <p className="text-sm mt-2 text-white/90">
           {profile.about || "No bio provided"}
         </p>
-
+        
         <div className="flex flex-wrap gap-2 mt-4">
           {profile.skills.map((skill, i) => (
             <span

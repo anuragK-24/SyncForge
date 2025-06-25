@@ -5,6 +5,7 @@ import {
   AnimatePresence,
   useMotionValue,
   useTransform,
+  useAnimationFrame,
 } from "framer-motion";
 
 export default function Feed() {
@@ -13,11 +14,12 @@ export default function Feed() {
   const [profiles, setProfiles] = useState([]);
   const [currentIndex, setCurrentIndex] = useState(0);
   const [message, setMessage] = useState("");
-  const [origin, setOrigin] = useState("top left");
+  const [origin, setOrigin] = useState("top left"); // for tilt
 
   const x = useMotionValue(0);
   const rotate = useTransform(x, [-300, 0, 300], [-15, 0, 15]);
 
+  // Monitor x value to change transformOrigin on the fly
   useEffect(() => {
     const unsubscribe = x.on("change", (latest) => {
       setOrigin(latest > 0 ? "top left" : "bottom left");
@@ -26,45 +28,23 @@ export default function Feed() {
   }, [x]);
 
   useEffect(() => {
-    const fetchFeed = async () => {
-      const token = localStorage.getItem("authToken");
-      if (!token) {
-        setMessage("❌ Token missing. Please log in again.");
-        return;
-      }
-
-      try {
-        const res = await axios.get(`${API}/user/feed`, {
-          headers: {
-            Authorization: `Bearer ${token}`,
-          },
-        });
+    axios
+      .get(`${API}/user/feed`, { withCredentials: true })
+      .then((res) => {
         setProfiles(res.data.feed || []);
-      } catch (err) {
+      })
+      .catch((err) => {
         console.error("Error fetching users:", err);
-        setMessage("❌ Failed to load users.");
-      }
-    };
-
-    fetchFeed();
-  }, [API]);
+        setMessage("Failed to load users.");
+      });
+  }, []);
 
   const sendRequest = async (status, toUserId, toUserName) => {
-    const token = localStorage.getItem("authToken");
-    if (!token) {
-      setMessage("❌ Unauthorized. Token not found.");
-      return;
-    }
-
     try {
       await axios.post(
         `${API}/request/send/${status}/${toUserId}`,
         {},
-        {
-          headers: {
-            Authorization: `Bearer ${token}`,
-          },
-        }
+        { withCredentials: true }
       );
       setMessage(`✅ Request "${status}" sent to ${toUserName}`);
     } catch (error) {
@@ -87,25 +67,23 @@ export default function Feed() {
 
     setCurrentIndex((prev) => prev + 1);
   };
-
   useEffect(() => {
     if (message) {
       const timer = setTimeout(() => setMessage(""), 2000);
       return () => clearTimeout(timer);
     }
   }, [message]);
-
   return (
     <div className="h-[93vh] w-screen bg-black sm:bg-gradient-to-tr sm:from-indigo-50 sm:to-pink-100 relative overflow-hidden">
       <div className="absolute inset-0 flex items-center justify-center">
         {message && (
           <motion.div
             className={`z-50 absolute top-6 left-1/2 -translate-x-1/2 flex items-center gap-3 px-5 py-3 rounded-lg shadow-xl text-sm font-semibold text-white
-            ${
-              message.includes("ignored") || message.startsWith("❌")
-                ? "bg-gradient-to-r from-red-500 to-rose-600"
-                : "bg-gradient-to-r from-green-500 to-emerald-600"
-            }`}
+      ${
+        message.includes("ignored") || message.startsWith("❌")
+          ? "bg-gradient-to-r from-red-500 to-rose-600"
+          : "bg-gradient-to-r from-green-500 to-emerald-600"
+      }`}
             initial={{ opacity: 0, y: -30 }}
             animate={{ opacity: 1, y: 0 }}
             exit={{ opacity: 0, y: -30 }}
@@ -152,9 +130,12 @@ export default function Feed() {
               }}
               transition={{ duration: 0.3 }}
             >
+              {/* Overlay */}
               <div className="absolute inset-0 bg-gradient-to-t from-black via-black/40 to-transparent"></div>
 
+              {/* Content */}
               <div className="absolute bottom-0 w-full p-5 text-white z-10">
+                {/* <p className="text-sm text-white/80 mb-1">📍 California, USA</p> */}
                 <h2 className="text-3xl font-bold">
                   {profiles[currentIndex].firstName}{" "}
                   {profiles[currentIndex].lastName}

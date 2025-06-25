@@ -54,10 +54,14 @@ authRouter.post("/login", async (req, res) => {
 
     const isPasswordValid = await user.validatePassword(password);
 
-    console.log(req.body)
+    console.log(req.body);
     if (isPasswordValid) {
       const token = await user.getJWT();
-      res.cookie("token", token);
+      res.cookie("token", token, {
+        httpOnly: true,
+        secure: true, 
+        sameSite: "None",
+      });
 
       res.status(200).send("User logged In successfullly");
     } else {
@@ -70,7 +74,7 @@ authRouter.post("/login", async (req, res) => {
 authRouter.post("/logout", userAuth, async (req, res) => {
   try {
     res.clearCookie("token", {
-        httpOnly: true,
+      httpOnly: true,
       secure: true,
       sameSite: "strict", // optional but recommended
     });

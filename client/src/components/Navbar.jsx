@@ -31,7 +31,7 @@ export default function Navbar({ isAuth, setIsAuth }) {
     <nav className="bg-white shadow-md px-4 py-3 relative z-50">
       <div className="flex justify-between items-center">
         <h1 className="text-xl sm:text-2xl font-bold text-indigo-600">
-          SyncForge
+          <Link to="/">SyncForge</Link>
         </h1>
 
         {/* Hamburger Button */}
@@ -46,7 +46,7 @@ export default function Navbar({ isAuth, setIsAuth }) {
         <div className="hidden sm:flex space-x-6 text-sm font-medium">
           {isAuth ? (
             <>
-              <Link to="/feed" className="hover:text-indigo-600 text-gray-800">
+              <Link to="/" className="hover:text-indigo-600 text-gray-800">
                 Feed
               </Link>
               <Link

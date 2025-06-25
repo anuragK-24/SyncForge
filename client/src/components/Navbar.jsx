@@ -11,19 +11,11 @@ export default function Navbar({ isAuth, setIsAuth }) {
 
   const handleLogout = async () => {
     try {
-      await axios.post(
-        `${API}/auth/logout`,
-        {},
-        {
-          withCredentials: true,
-        }
-      );
+      await axios.post(`${API}/auth/logout`, {}, { withCredentials: true });
+      setIsAuth(false);
       navigate("/login");
     } catch (err) {
       console.log(err.message);
-    } finally {
-      setIsAuth(false);
-      navigate("/login");
     }
   };
 

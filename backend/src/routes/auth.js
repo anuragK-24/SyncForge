@@ -9,17 +9,15 @@ const jwt = require("jsonwebtoken");
 
 authRouter.get("/status", (req, res) => {
   const token = req.cookies.token;
-  if (!token) return res.status(401).json({ authenticated: false });
+  if (!token) return res.json({ authenticated: false });
 
   try {
     const decoded = jwt.verify(token, process.env.SECRET_KEY);
-    res.status(200).json({ authenticated: true, user: decoded });
+    res.json({ authenticated: true, user: decoded });
   } catch (err) {
-    res.status(401).json({ authenticated: false });
+    res.json({ authenticated: false });
   }
 });
-
-
 
 authRouter.post("/signup", async (req, res) => {
   try {
@@ -58,7 +56,6 @@ authRouter.post("/signup", async (req, res) => {
   }
 });
 
-
 authRouter.post("/login", async (req, res) => {
   try {
     const { emailId, password } = req.body;
@@ -76,7 +73,7 @@ authRouter.post("/login", async (req, res) => {
       const token = await user.getJWT();
       res.cookie("token", token, {
         httpOnly: true,
-        secure: true, 
+        secure: true,
         sameSite: "None",
       });
 
@@ -88,7 +85,7 @@ authRouter.post("/login", async (req, res) => {
     res.status(400).send("ERROR : " + error.message);
   }
 });
-authRouter.post("/logout", userAuth, async (req, res) => {
+authRouter.post("/logout", async (req, res) => {
   try {
     res.clearCookie("token", {
       httpOnly: true,

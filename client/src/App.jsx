@@ -14,6 +14,7 @@ const isAuthenticated = () => document.cookie.includes("token");
 const PrivateRoute = ({ element }) => {
   return isAuthenticated() ? element : <Navigate to="/login" replace />;
 };
+console.log("has token from App.jsx", isAuthenticated());
 
 function App() {
   return (

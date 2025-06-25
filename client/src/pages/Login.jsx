@@ -33,7 +33,7 @@ export default function Login() {
       });
 
       setMessage("✅ Logged in successfully!");
-      setTimeout(() => navigate("/feed"), 500);
+      navigate("/feed")
     } catch (error) {
       console.error("Login error:", error);
       setMessage("❌ Login failed. Check credentials and try again.");

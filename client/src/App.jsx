@@ -10,13 +10,14 @@ import Register from "./pages/Register";
 import Navbar from "./components/Navbar.jsx";
 import SwipedProfiles from "./pages/SwipedProfiles.jsx";
 
-axios.defaults.withCredentials = true; // Important to include cookies with requests
+axios.defaults.withCredentials = true; // Include cookies with requests
 
 function App() {
   const [isAuth, setIsAuth] = useState(false);
   const [loading, setLoading] = useState(true);
 
   const API = import.meta.env.VITE_API_URL;
+
   useEffect(() => {
     const checkAuth = async () => {
       try {
@@ -41,24 +42,17 @@ function App() {
     <BrowserRouter>
       <Navbar isAuth={isAuth} setIsAuth={setIsAuth} />
       <Routes>
-        <Route path="/" element={<Navigate to="/feed" />} />
+        {/* Default route shows Feed if authenticated */}
+        <Route path="/" element={<PrivateRoute element={<Feed />} />} />
+
         <Route path="/login" element={<Login />} />
         <Route path="/register" element={<Register />} />
 
         {/* Protected Routes */}
         <Route path="/feed" element={<PrivateRoute element={<Feed />} />} />
-        <Route
-          path="/swipes"
-          element={<PrivateRoute element={<SwipedProfiles />} />}
-        />
-        <Route
-          path="/profile"
-          element={<PrivateRoute element={<Profile />} />}
-        />
-        <Route
-          path="/requests"
-          element={<PrivateRoute element={<ConnectionRequests />} />}
-        />
+        <Route path="/swipes" element={<PrivateRoute element={<SwipedProfiles />} />} />
+        <Route path="/profile" element={<PrivateRoute element={<Profile />} />} />
+        <Route path="/requests" element={<PrivateRoute element={<ConnectionRequests />} />} />
 
         {/* Fallback Route */}
         <Route

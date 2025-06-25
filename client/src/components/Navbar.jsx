@@ -18,8 +18,9 @@ export default function Navbar({ isAuth, setIsAuth }) {
           withCredentials: true,
         }
       );
+      navigate("/login");
     } catch (err) {
-      // Optional: show toast or console.log
+      console.log(err.message);
     } finally {
       setIsAuth(false);
       navigate("/login");

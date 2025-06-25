@@ -3,7 +3,7 @@ import axios from "axios";
 import InputField from "../components/InputField";
 import { Link, useNavigate } from "react-router-dom";
 
-export default function Login() {
+export default function Login({ setIsAuth }) {
   const API = import.meta.env.VITE_API_URL;
 
   const [formData, setFormData] = useState({
@@ -33,6 +33,7 @@ export default function Login() {
       });
 
       setMessage("✅ Logged in successfully!");
+      setIsAuth(true); 
       navigate("/", { replace: true });
     } catch (error) {
       console.error("Login error:", error);

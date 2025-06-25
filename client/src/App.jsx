@@ -46,8 +46,15 @@ function App() {
         <Route path="/" element={<PrivateRoute element={<Feed />} />} />
         <Route
           path="/login"
-          element={isAuth ? <Navigate to="/" replace /> : <Login />}
+          element={
+            isAuth ? (
+              <Navigate to="/" replace />
+            ) : (
+              <Login setIsAuth={setIsAuth} />
+            )
+          }
         />
+
         <Route
           path="/register"
           element={isAuth ? <Navigate to="/" replace /> : <Register />}

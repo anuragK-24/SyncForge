@@ -90,7 +90,7 @@ authRouter.post("/logout", async (req, res) => {
     res.clearCookie("token", {
       httpOnly: true,
       secure: true,
-      sameSite: "strict", // optional but recommended
+      sameSite: "none", // optional but recommended
     });
     res.status(200).send("Logged out successfully");
   } catch (error) {

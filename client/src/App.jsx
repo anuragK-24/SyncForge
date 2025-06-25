@@ -44,15 +44,29 @@ function App() {
       <Routes>
         {/* Default route shows Feed if authenticated */}
         <Route path="/" element={<PrivateRoute element={<Feed />} />} />
-
-        <Route path="/login" element={<Login />} />
-        <Route path="/register" element={<Register />} />
+        <Route
+          path="/login"
+          element={isAuth ? <Navigate to="/" replace /> : <Login />}
+        />
+        <Route
+          path="/register"
+          element={isAuth ? <Navigate to="/" replace /> : <Register />}
+        />
 
         {/* Protected Routes */}
         <Route path="/feed" element={<PrivateRoute element={<Feed />} />} />
-        <Route path="/swipes" element={<PrivateRoute element={<SwipedProfiles />} />} />
-        <Route path="/profile" element={<PrivateRoute element={<Profile />} />} />
-        <Route path="/requests" element={<PrivateRoute element={<ConnectionRequests />} />} />
+        <Route
+          path="/swipes"
+          element={<PrivateRoute element={<SwipedProfiles />} />}
+        />
+        <Route
+          path="/profile"
+          element={<PrivateRoute element={<Profile />} />}
+        />
+        <Route
+          path="/requests"
+          element={<PrivateRoute element={<ConnectionRequests />} />}
+        />
 
         {/* Fallback Route */}
         <Route

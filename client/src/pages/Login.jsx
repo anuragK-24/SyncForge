@@ -33,7 +33,7 @@ export default function Login() {
       });
 
       setMessage("✅ Logged in successfully!");
-      navigate("/feed")
+      navigate("/", { replace: true });
     } catch (error) {
       console.error("Login error:", error);
       setMessage("❌ Login failed. Check credentials and try again.");

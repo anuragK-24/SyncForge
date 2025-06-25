@@ -1,4 +1,7 @@
+import { useEffect, useState } from "react";
 import { Routes, Route, Navigate, BrowserRouter } from "react-router-dom";
+import axios from "axios";
+
 import ConnectionRequests from "./pages/ConnectionRequests";
 import Feed from "./pages/Feed";
 import Login from "./pages/Login";
@@ -7,16 +10,33 @@ import Register from "./pages/Register";
 import Navbar from "./components/Navbar.jsx";
 import SwipedProfiles from "./pages/SwipedProfiles.jsx";
 
-// 🔒 Auth check
-const isAuthenticated = () => document.cookie.includes("token");
-
-// 🔐 Route wrapper
-const PrivateRoute = ({ element }) => {
-  return isAuthenticated() ? element : <Navigate to="/login" replace />;
-};
-console.log("has token from App.jsx", isAuthenticated());
+axios.defaults.withCredentials = true; // Important to include cookies with requests
 
 function App() {
+  const API = import.meta.env.VITE_API_URL;
+  const [isAuth, setIsAuth] = useState(false);
+  const [loading, setLoading] = useState(true);
+
+  useEffect(() => {
+    const checkAuth = async () => {
+      try {
+        const res = await axios.get(`${API}/auth/status`);
+        setIsAuth(res.data.authenticated);
+      } catch (err) {
+        setIsAuth(false);
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    checkAuth();
+  }, []);
+
+  const PrivateRoute = ({ element }) => {
+    if (loading) return <div className="text-center mt-20">Loading...</div>;
+    return isAuth ? element : <Navigate to="/login" replace />;
+  };
+
   return (
     <BrowserRouter>
       <Navbar />
@@ -40,7 +60,7 @@ function App() {
           element={<PrivateRoute element={<ConnectionRequests />} />}
         />
 
-        {/* Fallback */}
+        {/* Fallback Route */}
         <Route
           path="*"
           element={

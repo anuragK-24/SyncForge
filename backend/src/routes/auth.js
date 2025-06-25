@@ -5,6 +5,22 @@ const bcrypt = require("bcrypt");
 const User = require("../models/user");
 const { userAuth } = require("../middleware/auth");
 
+const jwt = require("jsonwebtoken");
+
+authRouter.get("/status", (req, res) => {
+  const token = req.cookies.token;
+  if (!token) return res.status(401).json({ authenticated: false });
+
+  try {
+    const decoded = jwt.verify(token, process.env.SECRET_KEY);
+    res.status(200).json({ authenticated: true, user: decoded });
+  } catch (err) {
+    res.status(401).json({ authenticated: false });
+  }
+});
+
+
+
 authRouter.post("/signup", async (req, res) => {
   try {
     validateSignUpData(req.body);
@@ -41,6 +57,7 @@ authRouter.post("/signup", async (req, res) => {
     res.status(400).send("ERROR : " + error.message);
   }
 });
+
 
 authRouter.post("/login", async (req, res) => {
   try {

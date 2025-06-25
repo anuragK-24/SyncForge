@@ -1,23 +1,29 @@
-import { Link, useNavigate, useLocation } from "react-router-dom";
-import { useEffect, useState } from "react";
+import { Link, useNavigate } from "react-router-dom";
+import { useState } from "react";
+import axios from "axios";
 
-export default function Navbar() {
+axios.defaults.withCredentials = true;
+
+export default function Navbar({ isAuth, setIsAuth }) {
+  const API = import.meta.env.VITE_API_URL;
   const navigate = useNavigate();
-  const location = useLocation();
-  const [isLoggedIn, setIsLoggedIn] = useState(false);
   const [menuOpen, setMenuOpen] = useState(false);
 
-  useEffect(() => {
-    const loggedIn = document.cookie.includes("token=");
-    setIsLoggedIn(loggedIn);
-    setMenuOpen(false); // auto-close on route change
-  }, [location]);
-
-  const handleLogout = () => {
-    document.cookie =
-      "token=; expires=Thu, 01 Jan 1970 00:00:00 UTC; path=/;";
-    setIsLoggedIn(false);
-    navigate("/login");
+  const handleLogout = async () => {
+    try {
+      await axios.post(
+        `${API}/auth/logout`,
+        {},
+        {
+          withCredentials: true,
+        }
+      );
+    } catch (err) {
+      // Optional: show toast or console.log
+    } finally {
+      setIsAuth(false);
+      navigate("/login");
+    }
   };
 
   return (
@@ -37,18 +43,47 @@ export default function Navbar() {
 
         {/* Desktop Links */}
         <div className="hidden sm:flex space-x-6 text-sm font-medium">
-          {isLoggedIn ? (
+          {isAuth ? (
             <>
-              <Link to="/feed" className="hover:text-indigo-600 text-gray-800">Feed</Link>
-              <Link to="/swipes" className="hover:text-indigo-600 text-gray-800">Swipes</Link>
-              <Link to="/requests" className="hover:text-indigo-600 text-gray-800">Requests</Link>
-              <Link to="/profile" className="hover:text-indigo-600 text-gray-800">Profile</Link>
-              <button onClick={handleLogout} className="text-red-500 hover:text-red-700">Logout</button>
+              <Link to="/feed" className="hover:text-indigo-600 text-gray-800">
+                Feed
+              </Link>
+              <Link
+                to="/swipes"
+                className="hover:text-indigo-600 text-gray-800"
+              >
+                Swipes
+              </Link>
+              <Link
+                to="/requests"
+                className="hover:text-indigo-600 text-gray-800"
+              >
+                Requests
+              </Link>
+              <Link
+                to="/profile"
+                className="hover:text-indigo-600 text-gray-800"
+              >
+                Profile
+              </Link>
+              <button
+                onClick={handleLogout}
+                className="text-red-500 hover:text-red-700"
+              >
+                Logout
+              </button>
             </>
           ) : (
             <>
-              <Link to="/login" className="hover:text-indigo-600 text-gray-800">Login</Link>
-              <Link to="/register" className="hover:text-indigo-600 text-gray-800">Register</Link>
+              <Link to="/login" className="hover:text-indigo-600 text-gray-800">
+                Login
+              </Link>
+              <Link
+                to="/register"
+                className="hover:text-indigo-600 text-gray-800"
+              >
+                Register
+              </Link>
             </>
           )}
         </div>
@@ -57,18 +92,59 @@ export default function Navbar() {
       {/* Mobile Menu Overlay */}
       {menuOpen && (
         <div className="sm:hidden absolute top-full left-0 w-full bg-white shadow-md py-4 px-6 space-y-4 text-sm font-medium">
-          {isLoggedIn ? (
+          {isAuth ? (
             <>
-              <Link to="/feed" className="block text-gray-800" onClick={() => setMenuOpen(false)}>Feed</Link>
-              <Link to="/swipes" className="block text-gray-800" onClick={() => setMenuOpen(false)}>Swipes</Link>
-              <Link to="/requests" className="block text-gray-800" onClick={() => setMenuOpen(false)}>Requests</Link>
-              <Link to="/profile" className="block text-gray-800" onClick={() => setMenuOpen(false)}>Profile</Link>
-              <button onClick={handleLogout} className="block text-left text-red-500 hover:text-red-700">Logout</button>
+              <Link
+                to="/feed"
+                className="block text-gray-800"
+                onClick={() => setMenuOpen(false)}
+              >
+                Feed
+              </Link>
+              <Link
+                to="/swipes"
+                className="block text-gray-800"
+                onClick={() => setMenuOpen(false)}
+              >
+                Swipes
+              </Link>
+              <Link
+                to="/requests"
+                className="block text-gray-800"
+                onClick={() => setMenuOpen(false)}
+              >
+                Requests
+              </Link>
+              <Link
+                to="/profile"
+                className="block text-gray-800"
+                onClick={() => setMenuOpen(false)}
+              >
+                Profile
+              </Link>
+              <button
+                onClick={handleLogout}
+                className="block text-left text-red-500 hover:text-red-700"
+              >
+                Logout
+              </button>
             </>
           ) : (
             <>
-              <Link to="/login" className="block text-gray-800" onClick={() => setMenuOpen(false)}>Login</Link>
-              <Link to="/register" className="block text-gray-800" onClick={() => setMenuOpen(false)}>Register</Link>
+              <Link
+                to="/login"
+                className="block text-gray-800"
+                onClick={() => setMenuOpen(false)}
+              >
+                Login
+              </Link>
+              <Link
+                to="/register"
+                className="block text-gray-800"
+                onClick={() => setMenuOpen(false)}
+              >
+                Register
+              </Link>
             </>
           )}
         </div>

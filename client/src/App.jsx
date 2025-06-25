@@ -13,10 +13,10 @@ import SwipedProfiles from "./pages/SwipedProfiles.jsx";
 axios.defaults.withCredentials = true; // Important to include cookies with requests
 
 function App() {
-  const API = import.meta.env.VITE_API_URL;
   const [isAuth, setIsAuth] = useState(false);
   const [loading, setLoading] = useState(true);
 
+  const API = import.meta.env.VITE_API_URL;
   useEffect(() => {
     const checkAuth = async () => {
       try {
@@ -39,7 +39,7 @@ function App() {
 
   return (
     <BrowserRouter>
-      <Navbar />
+      <Navbar isAuth={isAuth} setIsAuth={setIsAuth} />
       <Routes>
         <Route path="/" element={<Navigate to="/feed" />} />
         <Route path="/login" element={<Login />} />

@@ -105,28 +105,32 @@ userRouter.get("/feed", userAuth, async (req, res) => {
 
     const loggedInUserId = req.user._id.toString();
 
-    // 1. Get all connection relations
+    // Get all users with whom the logged-in user has any connection request (in any direction)
     const connections = await ConnectionRequest.find(
       {
-        $or: [
-          { toUserId: loggedInUserId, status: { $in: ["accepted", "ignored", "interested"] } },
-          { fromUserId: loggedInUserId, status: { $in: ["accepted", "interested"] } },
-        ],
+        $or: [{ toUserId: loggedInUserId }, { fromUserId: loggedInUserId }],
       },
-      { fromUserId: 1, toUserId: 1, _id: 0 }
+      {
+        fromUserId: 1,
+        toUserId: 1,
+        _id: 0,
+      }
     );
 
-    // 2. Extract IDs to exclude
-    const connectedUserIds = connections.map((conn) => {
-      const fromId = conn.fromUserId.toString();
-      const toId = conn.toUserId.toString();
-      return fromId === loggedInUserId ? toId : fromId;
+    // Extract all connected user IDs (from or to)
+    const connectedUserIds = new Set();
+    connections.forEach((conn) => {
+      connectedUserIds.add(conn.fromUserId.toString());
+      connectedUserIds.add(conn.toUserId.toString());
     });
 
-    connectedUserIds.push(loggedInUserId); // exclude self
+    // Also exclude self from feed
+    connectedUserIds.add(loggedInUserId);
 
-    // 3. Final feed: users not in connectedUserIds
-    const users = await User.find({ _id: { $nin: connectedUserIds } })
+    // Fetch users not yet connected in any way
+    const users = await User.find({
+      _id: { $nin: Array.from(connectedUserIds) },
+    })
       .skip(skip)
       .limit(limit);
 
@@ -135,7 +139,6 @@ userRouter.get("/feed", userAuth, async (req, res) => {
     res.status(400).json({ error: error.message });
   }
 });
-
 
 //done added
 userRouter.get("/profile", userAuth, async (req, res) => {

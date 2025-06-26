@@ -37,7 +37,7 @@ const userSchema = new mongoose.Schema(
         }
       },
     },
-    age: { type: Number },
+    age: { type: Number, max: 120, min: 12 },
     skills: {
       type: [String],
       required: true,
@@ -77,8 +77,7 @@ const userSchema = new mongoose.Schema(
   }
 );
 
-
-//Compound index 
+//Compound index
 userSchema.index({ firstName: 1, lastName: 1 });
 
 // don't use arrow function here, as this keyword don't work inside it.

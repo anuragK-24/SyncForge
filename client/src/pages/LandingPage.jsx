@@ -1,5 +1,7 @@
 import { Link } from "react-router-dom";
 import { motion } from "framer-motion";
+// import Lottie from "lottie-react";
+// import aboutAnimation from "../assets/swipe.json";
 
 export default function LandingPage({ isAuth }) {
   return (
@@ -49,6 +51,9 @@ export default function LandingPage({ isAuth }) {
         </motion.div>
       </main>
 
+      {/* <Lottie
+        animationData={aboutAnimation}
+      /> */}
       {/* Footer */}
       <footer className="text-center py-4 text-sm text-gray-500 border-t border-gray-800">
         &copy; {new Date().getFullYear()} SyncForge. Built for Devs.

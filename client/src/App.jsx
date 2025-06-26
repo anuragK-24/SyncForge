@@ -9,6 +9,7 @@ import Profile from "./pages/Profile";
 import Register from "./pages/Register";
 import Navbar from "./components/Navbar.jsx";
 import SwipedProfiles from "./pages/SwipedProfiles.jsx";
+import LandingPage from "./pages/LandingPage.jsx";
 
 axios.defaults.withCredentials = true; // Include cookies with requests
 
@@ -42,25 +43,35 @@ function App() {
     <BrowserRouter>
       <Navbar isAuth={isAuth} setIsAuth={setIsAuth} />
       <Routes>
-        {/* Default route shows Feed if authenticated */}
-        <Route path="/" element={<PrivateRoute element={<Feed />} />} />
+        {/* Public route: LandingPage for unauthenticated users */}
+        <Route
+          path="/"
+          element={
+            loading ? (
+              <div className="text-center mt-20">Loading...</div>
+            ) : (
+              <LandingPage isAuth={isAuth} />
+            )
+          }
+        />
+
+        {/* Auth routes */}
         <Route
           path="/login"
           element={
             isAuth ? (
-              <Navigate to="/" replace />
+              <Navigate to="/feed" replace />
             ) : (
               <Login setIsAuth={setIsAuth} />
             )
           }
         />
-
         <Route
           path="/register"
-          element={isAuth ? <Navigate to="/" replace /> : <Register />}
+          element={isAuth ? <Navigate to="/feed" replace /> : <Register />}
         />
 
-        {/* Protected Routes */}
+        {/* Protected routes */}
         <Route path="/feed" element={<PrivateRoute element={<Feed />} />} />
         <Route
           path="/swipes"
@@ -75,7 +86,7 @@ function App() {
           element={<PrivateRoute element={<ConnectionRequests />} />}
         />
 
-        {/* Fallback Route */}
+        {/* 404 fallback */}
         <Route
           path="*"
           element={

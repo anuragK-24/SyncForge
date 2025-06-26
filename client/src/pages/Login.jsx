@@ -34,7 +34,7 @@ export default function Login({ setIsAuth }) {
 
       setMessage("✅ Logged in successfully!");
       setIsAuth(true); 
-      navigate("/", { replace: true });
+      navigate("/feed", { replace: true });
     } catch (error) {
       console.error("Login error:", error);
       setMessage("❌ Login failed. Check credentials and try again.");

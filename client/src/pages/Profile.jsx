@@ -75,33 +75,37 @@ export default function Profile() {
 
   if (loading) {
     return (
-      <p className="text-center mt-10 text-gray-600 animate-pulse">Loading profile...</p>
+      <p className="text-center mt-10 text-gray-600 animate-pulse">
+        Loading profile...
+      </p>
     );
   }
 
   if (!profile) {
-    return <p className="text-center mt-10 text-red-600">No profile found.</p>;
+    return (
+      <p className="text-center mt-10 text-red-600">No profile found.</p>
+    );
   }
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-zinc-100 via-neutral-200 to-white px-4 py-10">
-      <div className="max-w-5xl mx-auto backdrop-blur-md bg-white/60 border border-gray-200 rounded-3xl shadow-xl p-10 grid grid-cols-1 md:grid-cols-3 gap-10">
+    <div className="min-h-screen bg-gradient-to-r from-violet-100 via-pink-100 to-rose-100 px-4 py-12">
+      <div className="max-w-6xl mx-auto grid grid-cols-1 md:grid-cols-3 gap-8 bg-white/60 backdrop-blur-xl border border-gray-200 rounded-3xl shadow-2xl p-8">
         {/* Profile Card */}
         <div className="flex flex-col items-center justify-center text-center">
           <img
             src={formData.photoURL || "/default-avatar.png"}
             alt="Profile"
-            className="w-36 h-36 rounded-full object-cover shadow-md border-4 border-indigo-300"
+            className="w-36 h-36 rounded-full object-cover border-4 border-indigo-300 shadow-lg"
           />
-          <h2 className="text-2xl font-semibold mt-4 text-indigo-800">
+          <h2 className="text-2xl font-bold mt-4 text-indigo-800">
             {profile.firstName} {profile.lastName}
           </h2>
           <p className="text-sm text-gray-500">{profile.emailId}</p>
-          <div className="mt-4">
+          <div className="mt-4 flex flex-wrap justify-center gap-2">
             {(profile.skills || []).map((skill, i) => (
               <span
                 key={i}
-                className="inline-block bg-indigo-100 text-indigo-700 px-3 py-1 rounded-full text-xs font-medium m-1"
+                className="bg-indigo-100 text-indigo-700 px-3 py-1 rounded-full text-xs font-medium"
               >
                 {skill}
               </span>
@@ -110,38 +114,47 @@ export default function Profile() {
         </div>
 
         {/* Edit Form */}
-        <form onSubmit={handleSubmit} className="md:col-span-2 space-y-6">
+        <form
+          onSubmit={handleSubmit}
+          className="md:col-span-2 space-y-6 mt-6 md:mt-0"
+        >
           <div>
-            <label className="block text-sm font-medium text-gray-700 mb-1">Photo URL</label>
+            <label className="block text-sm font-medium text-gray-700 mb-1">
+              Photo URL
+            </label>
             <input
               type="url"
               name="photoURL"
               value={formData.photoURL}
               onChange={handleChange}
-              className="w-full px-4 py-2 border rounded-xl focus:outline-none focus:ring-2 focus:ring-indigo-400"
+              className="w-full px-4 py-2 border rounded-xl shadow-sm focus:outline-none focus:ring-2 focus:ring-indigo-400"
             />
           </div>
 
           <div>
-            <label className="block text-sm font-medium text-gray-700 mb-1">About</label>
+            <label className="block text-sm font-medium text-gray-700 mb-1">
+              About
+            </label>
             <textarea
               name="about"
               rows={3}
               value={formData.about}
               onChange={handleChange}
               placeholder="Tell us about your developer journey..."
-              className="w-full px-4 py-2 border rounded-xl resize-none focus:outline-none focus:ring-2 focus:ring-indigo-400"
+              className="w-full px-4 py-2 border rounded-xl resize-none shadow-sm focus:outline-none focus:ring-2 focus:ring-indigo-400"
             />
           </div>
 
           <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
             <div>
-              <label className="block text-sm font-medium text-gray-700 mb-1">Gender</label>
+              <label className="block text-sm font-medium text-gray-700 mb-1">
+                Gender
+              </label>
               <select
                 name="gender"
                 value={formData.gender}
                 onChange={handleChange}
-                className="w-full px-4 py-2 border rounded-xl focus:outline-none focus:ring-2 focus:ring-indigo-400"
+                className="w-full px-4 py-2 border rounded-xl shadow-sm focus:outline-none focus:ring-2 focus:ring-indigo-400"
               >
                 <option value="">Select</option>
                 <option value="male">Male</option>
@@ -151,33 +164,39 @@ export default function Profile() {
             </div>
 
             <div>
-              <label className="block text-sm font-medium text-gray-700 mb-1">Age</label>
+              <label className="block text-sm font-medium text-gray-700 mb-1">
+                Age
+              </label>
               <input
                 type="number"
                 name="age"
                 value={formData.age}
                 onChange={handleChange}
-                className="w-full px-4 py-2 border rounded-xl focus:outline-none focus:ring-2 focus:ring-indigo-400"
+                className="w-full px-4 py-2 border rounded-xl shadow-sm focus:outline-none focus:ring-2 focus:ring-indigo-400"
               />
             </div>
           </div>
 
           <div>
-            <label className="block text-sm font-medium text-gray-700 mb-1">Skills (comma separated)</label>
+            <label className="block text-sm font-medium text-gray-700 mb-1">
+              Skills (comma separated)
+            </label>
             <input
               type="text"
               name="skills"
               value={formData.skills}
               onChange={handleChange}
               placeholder="e.g., React.js, Node.js, MongoDB"
-              className="w-full px-4 py-2 border rounded-xl focus:outline-none focus:ring-2 focus:ring-indigo-400"
+              className="w-full px-4 py-2 border rounded-xl shadow-sm focus:outline-none focus:ring-2 focus:ring-indigo-400"
             />
           </div>
 
           {message && (
             <p
               className={`text-center text-sm ${
-                message.includes("✅") ? "text-green-600" : "text-red-600"
+                message.includes("✅")
+                  ? "text-green-600"
+                  : "text-red-600"
               }`}
             >
               {message}
@@ -186,7 +205,7 @@ export default function Profile() {
 
           <button
             type="submit"
-            className="w-full bg-indigo-600 text-white py-3 rounded-xl font-semibold hover:bg-indigo-700 transition-all duration-300"
+            className="w-full bg-gradient-to-r from-indigo-500 to-purple-600 text-white py-3 rounded-full font-semibold shadow-md hover:scale-105 transition-all duration-300"
           >
             Save Changes
           </button>

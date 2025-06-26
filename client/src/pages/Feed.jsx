@@ -36,7 +36,11 @@ export default function Feed() {
         {},
         { withCredentials: true }
       );
-      setMessage(`✅ Request "${status}" sent to ${toUserName}`);
+
+      if (status === "interested") {
+        setMessage(`✅ Request "interested" sent to ${toUserName}`);
+      }
+      // No message for "ignored"
     } catch (error) {
       console.error("Request Error:", error);
       setMessage("❌ Failed to send request.");
@@ -52,8 +56,7 @@ export default function Feed() {
       sendRequest("interested", user._id, user.firstName);
     } else if (direction === "left") {
       setSwipeDirection("left");
-      sendRequest("ignored", user._id, user.firstName);
-      setMessage(`❌ You ignored ${user.firstName}`);
+      sendRequest("ignored", user._id);
     }
 
     setCurrentIndex((prev) => prev + 1);
@@ -75,9 +78,9 @@ export default function Feed() {
             key={message}
             className={`fixed top-6 left-1/2 -translate-x-1/2 z-50 flex items-center gap-3 px-5 py-3 rounded-lg shadow-xl text-sm font-semibold text-white
               ${
-                message.includes("ignored") || message.startsWith("❌")
+                message.startsWith("❌")
                   ? "bg-gradient-to-r from-red-500 to-rose-600"
-                  : message.includes("skipped") || message.startsWith("⏭️")
+                  : message.startsWith("⏭️")
                   ? "bg-gradient-to-r from-gray-600 to-gray-800"
                   : "bg-gradient-to-r from-green-500 to-emerald-600"
               }`}

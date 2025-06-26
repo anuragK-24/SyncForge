@@ -29,7 +29,7 @@ export default function ConnectionRequests() {
         {},
         { withCredentials: true }
       );
-      setMessage(`Request ${status}`);
+      setMessage(`Request ${status === "accepted" ? "accepted 👍" : "rejected ❌"}`);
       setRequests((prev) => prev.filter((user) => user._id !== requestedId));
     } catch (error) {
       console.error("Error reviewing request:", error);
@@ -38,18 +38,18 @@ export default function ConnectionRequests() {
   };
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-yellow-50 via-orange-100 to-pink-100 py-12 px-4">
+    <div className="min-h-screen bg-gray-950 text-white py-12 px-4">
       <div className="max-w-6xl mx-auto">
-        <h2 className="text-4xl font-extrabold text-center text-orange-700 mb-10 drop-shadow-md">
+        <h2 className="text-4xl font-extrabold text-center bg-gradient-to-r from-yellow-400 to-pink-500 text-transparent bg-clip-text mb-10 drop-shadow-md">
           🔔 Pending Connection Requests
         </h2>
 
         {message && (
-          <p className="text-center text-md font-medium text-rose-600 mb-6">{message}</p>
+          <p className="text-center text-md font-medium text-rose-400 mb-6">{message}</p>
         )}
 
         {requests.length === 0 ? (
-          <div className="text-center text-gray-600 text-lg py-20">
+          <div className="text-center text-gray-400 text-lg py-20">
             🎉 You have no pending requests at the moment.
           </div>
         ) : (
@@ -57,23 +57,23 @@ export default function ConnectionRequests() {
             {requests.map((user) => (
               <div
                 key={user._id}
-                className="bg-white/60 backdrop-blur-xl p-6 rounded-3xl border border-orange-200 shadow-xl hover:shadow-2xl transition duration-300 transform hover:-translate-y-1"
+                className="bg-gradient-to-br from-yellow-100/20 via-orange-200/10 to-pink-300/10 backdrop-blur-xl p-6 rounded-3xl border border-orange-100/30 shadow-lg hover:shadow-2xl transition duration-300"
               >
                 <div className="flex items-center gap-4">
                   <img
                     src={user.photoURL || "/default-avatar.png"}
                     alt={user.firstName}
-                    className="w-20 h-20 rounded-full object-cover border-2 border-orange-300 shadow-sm"
+                    className="w-20 h-20 rounded-full object-cover border-2 border-orange-300 shadow-md"
                   />
                   <div>
-                    <h3 className="text-xl font-semibold text-orange-700">
+                    <h3 className="text-xl font-semibold text-orange-300">
                       {user.firstName} {user.lastName}
                     </h3>
-                    <p className="text-sm text-gray-500">{user.gender}</p>
+                    <p className="text-sm text-orange-100">{user.gender}</p>
                   </div>
                 </div>
 
-                <p className="mt-4 text-gray-700 text-sm line-clamp-3">
+                <p className="mt-4 text-sm text-gray-200 line-clamp-3">
                   {user.about || "No bio provided."}
                 </p>
 
@@ -81,7 +81,7 @@ export default function ConnectionRequests() {
                   {(user.skills || []).map((skill, i) => (
                     <span
                       key={i}
-                      className="bg-orange-100 text-orange-800 px-3 py-1 rounded-full text-xs font-medium"
+                      className="bg-orange-100/20 text-orange-200 px-3 py-1 rounded-full text-xs font-medium border border-orange-300/20"
                     >
                       {skill}
                     </span>
@@ -91,13 +91,13 @@ export default function ConnectionRequests() {
                 <div className="mt-6 flex gap-4">
                   <button
                     onClick={() => handleReview("accepted", user._id)}
-                    className="flex-1 bg-gradient-to-r from-green-400 to-green-600 text-white py-2 rounded-full font-semibold hover:scale-105 transition"
+                    className="flex-1 bg-gradient-to-r from-green-500 to-emerald-600 text-white py-2 rounded-full font-semibold shadow-md hover:scale-105 transition"
                   >
                     Accept
                   </button>
                   <button
                     onClick={() => handleReview("rejected", user._id)}
-                    className="flex-1 bg-gradient-to-r from-rose-400 to-red-500 text-white py-2 rounded-full font-semibold hover:scale-105 transition"
+                    className="flex-1 bg-gradient-to-r from-red-400 to-rose-500 text-white py-2 rounded-full font-semibold shadow-md hover:scale-105 transition"
                   >
                     Reject
                   </button>

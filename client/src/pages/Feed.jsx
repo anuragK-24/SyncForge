@@ -1,4 +1,3 @@
-// Feed.jsx
 import React, { useEffect, useState } from "react";
 import axios from "axios";
 import { motion, AnimatePresence } from "framer-motion";
@@ -14,9 +13,7 @@ export default function Feed() {
   useEffect(() => {
     axios
       .get(`${API}/user/feed`, { withCredentials: true })
-      .then((res) => {
-        setProfiles(res.data.feed || []);
-      })
+      .then((res) => setProfiles(res.data.feed || []))
       .catch((err) => {
         console.error("Error fetching users:", err);
         setMessage("Failed to load users.");
@@ -28,7 +25,7 @@ export default function Feed() {
     if (user) {
       setMessage(`⏭️ You skipped ${user.firstName}`);
     }
-    setSwipeDirection("right"); // Optional
+    setSwipeDirection("right");
     setCurrentIndex((prev) => prev + 1);
   };
 
@@ -70,56 +67,70 @@ export default function Feed() {
   }, [message]);
 
   return (
-    <div className="h-[93vh] w-screen bg-black sm:bg-gradient-to-tr sm:from-indigo-50 sm:to-pink-100 relative overflow-hidden">
-      <div className="absolute inset-0 flex items-center justify-center">
+    <div className="min-h-[95vh] w-full bg-gray-950 text-white relative overflow-hidden flex items-center justify-center px-4">
+      {/* Notification Banner */}
+      <AnimatePresence>
         {message && (
           <motion.div
-            className={`z-50 absolute top-6 left-1/2 -translate-x-1/2 flex items-center gap-3 px-5 py-3 rounded-lg shadow-xl text-sm font-semibold text-white
-  ${
-    message.includes("ignored") || message.startsWith("❌")
-      ? "bg-gradient-to-r from-red-500 to-rose-600"
-      : message.includes("skipped") || message.startsWith("⏭️")
-      ? "bg-gradient-to-r from-gray-500 to-gray-700"
-      : "bg-gradient-to-r from-green-500 to-emerald-600"
-  }`}
+            key={message}
+            className={`fixed top-6 left-1/2 -translate-x-1/2 z-50 flex items-center gap-3 px-5 py-3 rounded-lg shadow-xl text-sm font-semibold text-white
+              ${
+                message.includes("ignored") || message.startsWith("❌")
+                  ? "bg-gradient-to-r from-red-500 to-rose-600"
+                  : message.includes("skipped") || message.startsWith("⏭️")
+                  ? "bg-gradient-to-r from-gray-600 to-gray-800"
+                  : "bg-gradient-to-r from-green-500 to-emerald-600"
+              }`}
             initial={{ opacity: 0, y: -30 }}
             animate={{ opacity: 1, y: 0 }}
             exit={{ opacity: 0, y: -30 }}
             transition={{ duration: 0.4 }}
           >
             <span className="text-xl">
-              {message.includes("ignored") || message.startsWith("❌")
+              {message.startsWith("❌")
                 ? "❌"
+                : message.startsWith("⏭️")
+                ? "⏭️"
                 : "✅"}
             </span>
-            <p>{message.replace(/^✅ |^❌ /, "")}</p>
+            <p>{message.replace(/^✅ |^❌ |^⏭️ /, "")}</p>
           </motion.div>
         )}
+      </AnimatePresence>
 
-        <AnimatePresence>
-          {profiles.length > 0 && currentIndex < profiles.length ? (
-            <ProfileCard
-              key={profiles[currentIndex]._id}
-              profile={profiles[currentIndex]}
-              onSwipe={handleSwipe}
-              swipeDirection={swipeDirection}
-            />
-          ) : (
-            <div className="text-center mt-20 text-gray-500">
-              🎉 No more profiles to show.
-            </div>
+      {/* Profile Card Area */}
+      <div className="w-full max-w-xl mx-auto flex flex-col items-center justify-center gap-6">
+        <div className="w-full max-w-xl mx-auto relative flex items-center justify-center">
+          <AnimatePresence>
+            {profiles.length > 0 && currentIndex < profiles.length ? (
+              <ProfileCard
+                key={profiles[currentIndex]._id}
+                profile={profiles[currentIndex]}
+                onSwipe={handleSwipe}
+                swipeDirection={swipeDirection}
+              />
+            ) : (
+              <motion.div
+                initial={{ opacity: 0.5 }}
+                animate={{ opacity: 1 }}
+                className="text-center mt-20 text-gray-400"
+              >
+                🎉 No more profiles to show.
+              </motion.div>
+            )}
+          </AnimatePresence>
+
+          {/* Skip Button Overlay */}
+          {currentIndex < profiles.length && (
+            <motion.button
+              onClick={handleSkip}
+              whileTap={{ scale: 0.95 }}
+              className="absolute bottom-45 left-1/2 -translate-x-1/2 bg-white text-purple-700 px-6 py-2 rounded-full font-semibold shadow-lg hover:bg-gray-100 transition z-50"
+            >
+              Skip
+            </motion.button>
           )}
-        </AnimatePresence>
-
-        {/* Skip Button */}
-        {currentIndex < profiles.length && (
-          <button
-            onClick={handleSkip}
-            className="absolute bottom-8 left-1/2 -translate-x-1/2 px-5 py-2 bg-white text-black rounded-full font-semibold shadow-md hover:bg-gray-200 transition z-50"
-          >
-            Skip
-          </button>
-        )}
+        </div>
       </div>
     </div>
   );

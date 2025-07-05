@@ -1,6 +1,7 @@
 const express = require("express");
 const app = express();
 const cookieParser = require("cookie-parser");
+const mongoose = require("mongoose");
 require("dotenv").config();
 const cors = require("cors");
 
@@ -22,10 +23,16 @@ app.use(
 
 // Body & Cookie Parsers
 app.use(express.json());
-app.use(cookieParser());  
+app.use(cookieParser());
 
 // Database connection
-require("./config/database");
+mongoose
+  .connect(process.env.MONGODB_URI, {
+    useNewUrlParser: true,
+    useUnifiedTopology: true,
+  })
+  .then(() => console.log("MongoDB connected successfully"))
+  .catch((err) => console.error("MongoDB connection error:", err));
 
 // Routes
 app.use("/auth", authRouter);

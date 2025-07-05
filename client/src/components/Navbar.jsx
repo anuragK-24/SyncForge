@@ -42,6 +42,12 @@ export default function Navbar({ isAuth, setIsAuth }) {
               <Link to="/feed" className="hover:text-purple-400 transition">
                 Feed
               </Link>
+              <Link
+                to="/connections"
+                className="hover:text-purple-400 transition"
+              >
+                Connections
+              </Link>
               <Link to="/swipes" className="hover:text-purple-400 transition">
                 Swipes
               </Link>

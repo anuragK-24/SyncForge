@@ -10,6 +10,7 @@ import Register from "./pages/Register";
 import Navbar from "./components/Navbar.jsx";
 import SwipedProfiles from "./pages/SwipedProfiles.jsx";
 import LandingPage from "./pages/LandingPage.jsx";
+import Connections from "./pages/Connections.jsx";
 
 axios.defaults.withCredentials = true; // Include cookies with requests
 
@@ -76,6 +77,10 @@ function App() {
         <Route
           path="/swipes"
           element={<PrivateRoute element={<SwipedProfiles />} />}
+        />
+        <Route
+          path="/connections"
+          element={<PrivateRoute element={<Connections />} />}
         />
         <Route
           path="/profile"

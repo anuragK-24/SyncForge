@@ -12,6 +12,15 @@ const SAFE_USER_DATA = [
   "about",
   "skills",
 ];
+const SAFE_USER_DATA_WITH_EMAIL = {
+  firstName: 1,
+  lastName: 1,
+  emailId: 1,
+  photoURL: 1,
+  age: 1,
+  skills: 1,
+  about: 1,
+};
 
 userRouter.get("/swipes", userAuth, async (req, res) => {
   try {
@@ -40,33 +49,28 @@ userRouter.get("/swipes", userAuth, async (req, res) => {
 
 userRouter.get("/connections", userAuth, async (req, res) => {
   try {
-    const loggedInUser = req.user;
-    const userId = loggedInUser._id;
+    const userId = req.user._id;
+
     const connections = await ConnectionRequest.find({
       $or: [
-        {
-          toUserId: userId,
-          status: "accepted",
-        },
-        {
-          fromUserId: userId,
-          status: "accepted",
-        },
+        { toUserId: userId, status: "accepted" },
+        { fromUserId: userId, status: "accepted" },
       ],
     })
-      .populate("fromUserId", SAFE_USER_DATA)
-      .populate("toUserId", SAFE_USER_DATA);
+      .populate("fromUserId", SAFE_USER_DATA_WITH_EMAIL)
+      .populate("toUserId", SAFE_USER_DATA_WITH_EMAIL);
 
     const data = connections.map((connection) => {
-      if (connection.fromUserId._id.toString() === userId.toString()) {
-        return connection.toUserId;
-      }
-      return connection.fromUserId;
+      return connection.fromUserId._id.toString() === userId.toString()
+        ? connection.toUserId
+        : connection.fromUserId;
     });
 
-    res.status(200).send({ message: "Found connections ", data });
+    res.status(200).json({ message: "Found connections", data });
   } catch (error) {
-    res.status(400).send("Error : ", error.message);
+    res
+      .status(400)
+      .json({ message: "Error fetching connections", error: error.message });
   }
 });
 

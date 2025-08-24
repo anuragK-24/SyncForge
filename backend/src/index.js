@@ -4,11 +4,21 @@ const cookieParser = require("cookie-parser");
 const mongoose = require("mongoose");
 require("dotenv").config();
 const cors = require("cors");
+const rateLimit = require("express-rate-limit");
 
 const authRouter = require("./routes/auth");
 const profileRouter = require("./routes/profile");
 const requestRouter = require("./routes/request");
 const userRouter = require("./routes/user");
+
+
+const authLimiter = rateLimit({
+  windowMs: 5 * 60 * 1000, 
+  max: 10, 
+  message: { error: "Too many login attempts, please try again later." },
+  standardHeaders: true,
+  legacyHeaders: false,
+});
 
 // CORS
 app.use(
@@ -19,7 +29,6 @@ app.use(
     allowedHeaders: ["Content-Type", "Authorization"],
   })
 );
-// app.options("*", cors()); // Add this for preflight support
 
 // Body & Cookie Parsers
 app.use(express.json());
@@ -34,8 +43,9 @@ mongoose
   .then(() => console.log("MongoDB connected successfully"))
   .catch((err) => console.error("MongoDB connection error:", err));
 
-// Routes
-app.use("/auth", authRouter);
+app.use("/auth", authLimiter, authRouter);
+
+// Other routes
 app.use("/profile", profileRouter);
 app.use("/request", requestRouter);
 app.use("/user", userRouter);

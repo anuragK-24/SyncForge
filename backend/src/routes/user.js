@@ -3,6 +3,16 @@ const userRouter = express.Router();
 const User = require("../models/user");
 const { userAuth } = require("../middleware/auth");
 const ConnectionRequest = require("../models/connectionRequest");
+const rateLimit = require("express-rate-limit");
+
+const userRouteLimiter = rateLimit({
+  windowMs: 1 * 60 * 1000, 
+  max: 30, 
+  message: { error: "Too many requests, please slow down." },
+  standardHeaders: true,
+  legacyHeaders: false,
+});
+
 
 const SAFE_USER_DATA = [
   "firstName",
@@ -100,7 +110,7 @@ userRouter.get("/pendingRequest", userAuth, async (req, res) => {
   }
 });
 
-userRouter.get("/feed", userAuth, async (req, res) => {
+userRouter.get("/feed", userAuth, userRouteLimiter, async (req, res) => {
   try {
     const page = parseInt(req.query.page) || 1;
     let limit = parseInt(req.query.limit) || 10;
@@ -154,7 +164,7 @@ userRouter.get("/profile", userAuth, async (req, res) => {
   }
 });
 
-userRouter.get("/users", userAuth, async (req, res) => {
+userRouter.get("/users", userAuth, userRouteLimiter,async (req, res) => {
   try {
     const users = await User.find();
     res.status(200).send(users);

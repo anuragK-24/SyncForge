@@ -70,7 +70,7 @@ export default function Feed() {
   }, [message]);
 
   return (
-    <div className="min-h-[95vh] w-full bg-gray-950 text-white relative overflow-hidden flex items-center justify-center px-4">
+    <div className="min-h-[85vh] w-full bg-gray-950 text-white relative overflow-hidden flex items-center justify-center px-4">
       {/* Notification Banner */}
       <AnimatePresence>
         {message && (

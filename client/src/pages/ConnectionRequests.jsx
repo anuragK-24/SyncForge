@@ -8,7 +8,7 @@ export default function ConnectionRequests() {
 
   const fetchRequests = async () => {
     try {
-      const res = await axios.get(`${API}/user/pendingRequest`, {
+      const res = await axios.get(`${API}/api/user/pendingRequest`, {
         withCredentials: true,
       });
       setRequests(res.data.data);
@@ -25,7 +25,7 @@ export default function ConnectionRequests() {
   const handleReview = async (status, requestedId) => {
     try {
       await axios.post(
-        `${API}/request/review/${status}/${requestedId}`,
+        `${API}/api/request/review/${status}/${requestedId}`,
         {},
         { withCredentials: true }
       );

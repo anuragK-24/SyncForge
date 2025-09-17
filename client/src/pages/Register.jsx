@@ -43,7 +43,7 @@ export default function Register() {
         photoURL: formData.photoURL || undefined,
       };
 
-      const response = await axios.post(`${API}/auth/signup`, payload);
+      const response = await axios.post(`${API}/api/auth/signup`, payload);
       setMessage("🎉 Profile created successfully! Start collaborating now.");
       navigate("/feed");
     } catch (error) {

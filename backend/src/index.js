@@ -43,12 +43,12 @@ mongoose
   .then(() => console.log("MongoDB connected successfully"))
   .catch((err) => console.error("MongoDB connection error:", err));
 
-app.use("/auth", authLimiter, authRouter);
+app.use("/api/auth", authLimiter, authRouter);
 
 // Other routes
-app.use("/profile", profileRouter);
-app.use("/request", requestRouter);
-app.use("/user", userRouter);
+app.use("/api/profile", profileRouter);
+app.use("/api/request", requestRouter);
+app.use("/api/user", userRouter);
 
 // Start server
 app.listen(5000, () => {

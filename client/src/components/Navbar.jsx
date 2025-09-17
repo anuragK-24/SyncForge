@@ -20,7 +20,7 @@ export default function Navbar({ isAuth, setIsAuth }) {
 
   const handleLogout = async () => {
     try {
-      await axios.post(`${API}/auth/logout`, {}, { withCredentials: true });
+      await axios.post(`${API}/api/auth/logout`, {}, { withCredentials: true });
     } catch (err) {
       // Optional error handling
     } finally {

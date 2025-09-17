@@ -12,7 +12,7 @@ export default function Feed() {
 
   useEffect(() => {
     axios
-      .get(`${API}/user/feed`, { withCredentials: true })
+      .get(`${API}/api/user/feed`, { withCredentials: true })
       .then((res) => setProfiles(res.data.feed || []))
       .catch((err) => {
         console.error("Error fetching users:", err);
@@ -32,7 +32,7 @@ export default function Feed() {
   const sendRequest = async (status, toUserId, toUserName) => {
     try {
       await axios.post(
-        `${API}/request/send/${status}/${toUserId}`,
+        `${API}/api/request/send/${status}/${toUserId}`,
         {},
         { withCredentials: true }
       );

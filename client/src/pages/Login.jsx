@@ -26,7 +26,7 @@ export default function Login({ setIsAuth }) {
     setMessage("");
 
     try {
-      const response = await axios.post(`${API}/auth/login`, formData, {
+      const response = await axios.post(`${API}/api/auth/login`, formData, {
         withCredentials: true,
         headers: {
           "Content-Type": "application/json",

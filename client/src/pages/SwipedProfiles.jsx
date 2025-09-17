@@ -10,7 +10,7 @@ export default function SwipedProfiles() {
 
   useEffect(() => {
     axios
-      .get(`${API}/user/swipes`, { withCredentials: true })
+      .get(`${API}/api/user/swipes`, { withCredentials: true })
       .then((res) => setProfiles(res.data.data))
       .catch((err) => {
         console.error("Fetch error:", err);

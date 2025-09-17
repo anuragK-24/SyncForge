@@ -23,7 +23,7 @@ function App() {
   useEffect(() => {
     const checkAuth = async () => {
       try {
-        const res = await axios.get(`${API}/auth/status`);
+        const res = await axios.get(`${API}/api/auth/status`);
         setIsAuth(res.data.authenticated);
       } catch (err) {
         setIsAuth(false);

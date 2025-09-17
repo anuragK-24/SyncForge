@@ -11,7 +11,7 @@ export default function Connections() {
 
   useEffect(() => {
     axios
-      .get(`${API}/user/connections`, { withCredentials: true })
+      .get(`${API}/api/user/connections`, { withCredentials: true })
       .then((res) => setConnections(res.data.data || []))
       .catch((err) => {
         console.error("Error fetching connections:", err);

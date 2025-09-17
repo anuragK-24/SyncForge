@@ -16,7 +16,7 @@ export default function Profile() {
 
   useEffect(() => {
     axios
-      .get(`${API}/user/profile`, { withCredentials: true })
+      .get(`${API}/api/user/profile`, { withCredentials: true })
       .then((res) => {
         setProfile(res.data);
         setFormData({
@@ -55,7 +55,7 @@ export default function Profile() {
 
     try {
       const response = await axios.patch(
-        `${API}/user/profileUpdate/${profile._id}`,
+        `${API}/api/user/profileUpdate/${profile._id}`,
         {
           photoURL: formData.photoURL,
           about: formData.about,
